@@ -4,15 +4,14 @@
       <vs-divider color="primary">
         <h1>Marketplace</h1>
       </vs-divider>
-      <vs-row 
-        v-if="offers.records" 
+      <vs-row
         vs-align="center" 
         vs-type="flex" 
         vs-justify="space-around" 
         vs-w="12">
         <vs-col
-          v-for="offer in offers.records"
-          :key="offer"
+          v-for="order in orders.bids"
+          :key="order.price"
           type="flex"
           vs-justify="center"
           vs-align="center"
@@ -21,57 +20,57 @@
           vs-xs="12"
           vs-w="2.5"
         >
-          <vs-card 
-            actionable 
-            class="cardx">
+          <vs-card
+            v-if="Math.floor(Date.now() / 1000) > order.signedOrder.expirationTimeSeconds"
+            actionable
+            class="cardx"
+          >
             <div slot="header">
-              <h3>{{ offer.metaData.title }}</h3>
+              <h3>{{ order.type }}</h3>
             </div>
             <div slot="media">
-              <img :src="offer.metaData.image">
+              <img src="https://0xproject.com/images/token_icons/ZRX.png">
             </div>
             <div>
-              <span class="text-font">{{ offer.metaData.desc }}</span>
+              <span class="text-font">0x Protocol Token</span>
             </div>
             <div slot="footer">
               <vs-row vs-justify="flex-end">
                 <vs-button 
-                  disabled 
                   color="primary" 
-                  type="gradient">Ξ 5</vs-button>
+                  type="gradient" 
+                  @click="getOrderbook">Ξ 5</vs-button>
                 <vs-button
                   color="primary"
                   type="gradient"
-                  @click="$router.push('/offer/' + offer.order.makerAddress)"
+                  @click="$router.push('/offers/' + order.orderHash)"
                 >More details</vs-button>
               </vs-row>
             </div>
           </vs-card>
         </vs-col>
       </vs-row>
-      <vs-prompt 
-        :vs-active.sync="activePrompt" 
-        @vs-accept="acceptAlert" 
-        @vs-close="close">
-        <div class="prompt">Current price Offer
-          <vs-input 
-            placeholder="Code" 
-            vs-placeholder="Code"/>
-        </div>
-      </vs-prompt>
     </div>
   </section>
 </template>
 <script>
-// import zeroExInstant from "https://instant.0x.org/instant.js";
+import { HttpClient, OrderbookRequest, OrderConfigRequest } from '@0x/connect'
 import SideBar from '@/components/SideBar'
+import TOKENS from '@/pages/tokens.js'
 
 export default {
+  asyncData({ $axios }) {
+    return $axios
+      .$get('https://api.radarrelay.com/v2/markets/zrx-weth/book')
+      .then(res => {
+        return { orders: res }
+      })
+  },
   name: 'Home',
   components: { SideBar },
   data: function() {
     return {
-      activePrompt: false,
+      market: null,
       offers: {
         total: 1,
         page: 0,
@@ -110,20 +109,23 @@ export default {
     }
   },
   methods: {
-    acceptAlert() {
-      //check if transaction is received, notify error if not
-      this.$vs.notify({
-        color: 'success',
-        title: 'Accept Selected',
-        text: 'Lorem ipsum dolor sit amet, consectetur'
+    async getOrderbook() {
+      const relayerApiUrl = 'https://sra.bamboorelay.com/0x/v2/'
+      const httpClient = new HttpClient(relayerApiUrl)
+      const orderbookRequest = {
+        baseAssetData:
+          '0xf47261b0000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498',
+        quoteAssetData:
+          '0x02571792000000000000000000000000371b13d97f4bf77d724e78c16b7dc74099f40e840000000000000000000000000000000000000000000000000000000000000063'
+      }
+      const response = await httpClient.getOrderbookAsync(orderbookRequest, {
+        networkId: 1
       })
-    },
-    close() {
-      this.$vs.notify({
-        color: 'danger',
-        title: 'Closed',
-        text: 'You close a dialog!'
-      })
+      if (response.asks.total === 0) {
+        throw new Error('No orders found on the SRA Endpoint')
+      } else {
+        console.log(response)
+      }
     }
   }
 }
@@ -144,13 +146,5 @@ h3 {
 .subTitle {
   text-shadow: 0 5px 10px rgba(0, 0, 0, 0.33);
   position: relative;
-}
-.prompt {
-  padding: 10px;
-  padding-bottom: 0px;
-}
-.prompt .vs-input {
-  width: 100%;
-  margin-top: 10px;
 }
 </style>

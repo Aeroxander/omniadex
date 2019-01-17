@@ -61,7 +61,7 @@
           vs-w="4"
           vs-offset="1"
         >
-          <vs-divider color="primary">{{ $route.params.id }}</vs-divider>
+          <vs-divider color="primary">{{ params.id }}</vs-divider>
           <vs-alert
             title="Software License"
             active="true"
@@ -76,7 +76,7 @@
               title="Lifetime" 
               subtitle="This NFT has a lifetime of 30 days"/>
             <vs-list-item 
-              :subtitle="$route.params.id" 
+              :subtitle="params.id" 
               title="Owner ID"/>
             <vs-list-item 
               title="Duration" 
@@ -104,7 +104,7 @@
               type="filled" 
               @click="openLoading">
               Buy now for
-              Ξ 5
+              Ξ {{ order.price }}
             </vs-button>
           </span>
           <span v-else>
@@ -146,7 +146,34 @@
   </section>
 </template>
 <script>
+import {
+  assetDataUtils,
+  BigNumber,
+  ContractWrappers,
+  generatePseudoRandomSalt,
+  Order,
+  orderHashUtils,
+  signatureUtils,
+  SignerType
+} from '0x.js'
+
 export default {
+  /*
+  validate({ params }) {
+    return order.orderHash === params.id
+  },
+  */
+  asyncData({ params, $axios }) {
+    return $axios
+      .$get('https://api.radarrelay.com/v2/markets/zrx-weth/book')
+      .then(res => {
+        return {
+          order:
+            res.bids[res.bids.findIndex(item => item.orderHash === params.id)],
+          params: params.id
+        }
+      })
+  },
   name: 'Offer',
   components: {},
   data: function() {
@@ -154,7 +181,7 @@ export default {
       iteration: {},
       recurring: false,
       period: ['Daily', 'Weekly', 'Monthly'],
-      offerAmount: 7.4,
+      offerAmount: order.price,
       activePrompt: false,
       bid: 'false'
     }
