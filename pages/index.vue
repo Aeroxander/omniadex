@@ -1,75 +1,230 @@
 <template>
   <section class="container">
-    <div class="home">
-      <vs-divider color="primary">
-        <h1>Marketplace</h1>
-      </vs-divider>
-      <vs-row
-        vs-align="center" 
-        vs-type="flex" 
-        vs-justify="space-around" 
-        vs-w="12">
-        <vs-col
-          v-for="order in orders.bids"
-          :key="order.price"
-          type="flex"
-          vs-justify="center"
-          vs-align="center"
-          vs-lg="2.7"
-          vs-sm="8"
-          vs-xs="12"
-          vs-w="2.5"
-        >
-          <vs-card
-            v-if="Math.floor(Date.now() / 1000) > order.signedOrder.expirationTimeSeconds"
-            actionable
-            class="cardx"
+    <!-- <div class="parentx-static">
+      <vs-sidebar
+        v-if="pairs"
+        v-model="open"
+        static-position
+        default-index="1"
+        color="primary"
+        class="sidebarx"
+        spacer
+      >
+        <div 
+          slot="header" 
+          class="header-sidebar">
+          <vs-avatar 
+            size="70px" 
+            src="https://randomuser.me/api/portraits/men/85.jpg"/>
+
+          <h4>0x55cA8aB54574D1Dcf1cF44Dbc7B69Bb6e6b2f075
+            <vs-button 
+              color="primary" 
+              icon="more_horiz" 
+              type="flat"/>
+          </h4>
+        </div>
+
+        <vs-sidebar-item 
+          index="1" 
+          icon="question_answer">Dashboard</vs-sidebar-item>
+
+        <vs-sidebar-group 
+          :open="true" 
+          title="Categories">
+          <vs-sidebar-item 
+            index="2" 
+            icon="store">NFT's</vs-sidebar-item>
+          <vs-sidebar-group title="EC-20">
+            <vs-sidebar-group title="ETH">
+              <vs-sidebar-item
+                v-for="pair in pairs.filter(pair => !pair.id.includes('DAI'))"
+                :key="pair.score"
+                :index="'2.'+pair.index"
+              >{{ pair.displayName }}</vs-sidebar-item>
+            </vs-sidebar-group>
+            <vs-sidebar-group title="DAI">
+              <vs-sidebar-item
+                v-for="pair in pairs.filter(pair => pair.id.includes('DAI'))"
+                :key="pair.score"
+                :index="'2.'+pair.index"
+              >{{ pair.displayName }}</vs-sidebar-item>
+            </vs-sidebar-group>
+          </vs-sidebar-group>
+          <vs-sidebar-item 
+            index="2.3" 
+            icon="style">Misc</vs-sidebar-item>
+        </vs-sidebar-group>
+
+        <vs-divider 
+          icon="person" 
+          position="left">User</vs-divider>
+
+        <vs-sidebar-item 
+          index="3" 
+          icon="verified_user">Configurations</vs-sidebar-item>
+        <vs-sidebar-item 
+          index="4" 
+          icon="account_box">Profile</vs-sidebar-item>
+        <vs-sidebar-item index="5">Card</vs-sidebar-item>
+
+        <div 
+          slot="footer" 
+          class="footer-sidebar">
+          <vs-button 
+            icon="reply" 
+            color="danger" 
+            type="flat">Log Out</vs-button>
+          <vs-button 
+            icon="settings" 
+            color="primary" 
+            type="flat"/>
+        </div>
+      </vs-sidebar>
+    </div>-->
+    <vs-divider color="primary">
+      <h1>Marketplace</h1>
+    </vs-divider>
+    <vs-tabs vs-alignment="center">
+      <vs-tab 
+        vs-label="WETH" 
+        vs-icon="pets" 
+        @click="colorx = '#8B0000'">
+        <vs-tabs vs-position="left">
+          <vs-tab
+            v-for="pair in pairs.filter(pair => !pair.id.includes('DAI'))"
+            :key="pair.score"
+            :vs-label="pair.displayName"
+            @click="getOrders(pair.id)"
           >
-            <div slot="header">
-              <h3>{{ order.type }}</h3>
-            </div>
-            <div slot="media">
-              <img src="https://0xproject.com/images/token_icons/ZRX.png">
-            </div>
-            <div>
-              <span class="text-font">0x Protocol Token</span>
-            </div>
-            <div slot="footer">
-              <vs-row vs-justify="flex-end">
-                <vs-button 
-                  color="primary" 
-                  type="gradient" 
-                  @click="getOrderbook">Ξ 5</vs-button>
-                <vs-button
-                  color="primary"
-                  type="gradient"
-                  @click="$router.push('/offers/' + order.orderHash)"
-                >More details</vs-button>
-              </vs-row>
-            </div>
-          </vs-card>
-        </vs-col>
-      </vs-row>
-    </div>
+            <vs-row 
+              vs-align="center" 
+              vs-type="flex" 
+              vs-justify="space-around" 
+              vs-w="12">
+              <vs-col
+                v-for="order in orders.bids"
+                :key="order.price"
+                type="flex"
+                vs-justify="center"
+                vs-align="center"
+                vs-lg="2.7"
+                vs-sm="8"
+                vs-xs="12"
+                vs-w="2.5"
+              >
+                <vs-card
+                  actionable
+                  class="cardx"
+                >
+                  <div slot="header">
+                    <h3>{{ order.type }}</h3>
+                  </div>
+                  <div slot="media">
+                    <img :src="'https://0xproject.com/images/token_icons/' + pair.id.split('-')[0] + '.png'">
+                  </div>
+                  <div>
+                    <span class="text-font"> {{ pair.name }} </span>
+                  </div>
+                  <vs-button 
+                    color="#0066CC"
+                    type="line"
+                    disabled>Ξ {{ order.price }}</vs-button>
+                  <div slot="footer">
+                    <vs-row vs-justify="flex-end">
+                      <vs-button
+                        color="success"
+                        type="gradient"
+                        icon="details"
+                        @click="$router.push('/offers/' + order.orderHash)"
+                      >Buy</vs-button>
+                    </vs-row>
+                  </div>
+                </vs-card>
+              </vs-col>
+            </vs-row>
+          </vs-tab>
+        </vs-tabs>
+      </vs-tab>
+      <vs-tab 
+        vs-label="DAI" 
+        vs-icon="account_balance" 
+        @click="colorx = '#FFA500'">
+        <vs-tabs vs-position="left">
+          <vs-tab
+            v-for="pair in pairs.filter(pair => pair.id.includes('DAI'))"
+            :key="pair.score"
+            :vs-label="pair.displayName"
+            @click="getOrders(pair.id)"
+          >
+            <vs-row 
+              vs-align="center" 
+              vs-type="flex" 
+              vs-justify="space-around" 
+              vs-w="12">
+              <vs-col
+                v-for="order in orders.bids"
+                :key="order.price"
+                type="flex"
+                vs-justify="center"
+                vs-align="center"
+                vs-lg="2.7"
+                vs-sm="8"
+                vs-xs="12"
+                vs-w="2.5"
+              >
+                <vs-card
+                  actionable
+                  class="cardx"
+                >
+                  <div slot="header">
+                    <h3>{{ order.type }}</h3>
+                  </div>
+                  <div slot="media">
+                    <img :src="'https://0xproject.com/images/token_icons/' + pair.id.split('-')[0] + '.png'">
+                  </div>
+                  <div>
+                    <span class="text-font"> {{ pair.name }} </span>
+                  </div>
+                  <vs-button 
+                    color="primary" 
+                    type="line" >Ξ {{ order.price }}</vs-button>
+                  <div slot="footer">
+                    <vs-row vs-justify="flex-end">
+                      <vs-button
+                        color="success"
+                        type="gradient"
+                        icon="details"
+                        @click="$router.push('/offers/' + order.orderHash)"
+                      >Buy</vs-button>
+                    </vs-row>
+                  </div>
+                </vs-card>
+              </vs-col>
+            </vs-row>
+          </vs-tab>
+        </vs-tabs>
+      </vs-tab>
+    </vs-tabs>
   </section>
 </template>
 <script>
 import { HttpClient, OrderbookRequest, OrderConfigRequest } from '@0x/connect'
-import SideBar from '@/components/SideBar'
 import TOKENS from '@/pages/tokens.js'
 
 export default {
-  asyncData({ $axios }) {
-    return $axios
-      .$get('https://api.radarrelay.com/v2/markets/zrx-weth/book')
-      .then(res => {
-        return { orders: res }
-      })
+  async asyncData({ $axios }) {
+    const bookRes = await $axios.$get(
+      'https://api.radarrelay.com/v2/markets/zrx-weth/book'
+    )
+    const marketRes = await $axios.$get('https://api.radarrelay.com/v2/markets')
+    return { orders: bookRes, pairs: marketRes }
   },
-  name: 'Home',
-  components: { SideBar },
+  name: 'Index',
+  components: {},
   data: function() {
     return {
+      open: false,
       market: null,
       offers: {
         total: 1,
@@ -126,6 +281,12 @@ export default {
       } else {
         console.log(response)
       }
+    },
+    async getOrders(id) {
+      const bookRes = await this.$axios.$get(
+        'https://api.radarrelay.com/v2/markets/' + id + '/book'
+      )
+      this.orders = bookRes
     }
   }
 }
@@ -145,6 +306,12 @@ h3 {
 
 .subTitle {
   text-shadow: 0 5px 10px rgba(0, 0, 0, 0.33);
+  position: relative;
+}
+
+.parentx-static {
+  overflow: hidden;
+  height: 500px;
   position: relative;
 }
 </style>

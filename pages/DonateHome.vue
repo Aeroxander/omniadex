@@ -73,7 +73,7 @@
 
 <script>
 export default {
-  name: 'Donatehome',
+  name: 'DonateHome',
   components: {}
 }
 </script>

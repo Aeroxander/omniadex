@@ -8,20 +8,24 @@
         vs-justify="center" 
         vs-w="1">
         <vs-select
-          v-model="select1"
+          v-model="select"
           placeholder="Select"
           class="selectExample"
           label="Select token"
         >
           <vs-select-item
-            v-for="item in tokensExample"
-            :key="item.index"
-            :value="item.value"
-            :text="item.text"
+            v-for="token in tokens.filter(token => token.zeroex_official === 1)"
+            :key="token.name"
+            :value="token.symbol"
+            :text="token.name"
             :danger="true"
           />
         </vs-select>
-
+        Price
+        <vs-input-number 
+          v-model="price" 
+          min="0"/>
+        Amount
         <vs-input-number 
           v-model="offerAmount" 
           min="0"/>
@@ -34,6 +38,10 @@
 </template>
 <script>
 export default {
+  async asyncData({ $axios }) {
+    const tokens = await $axios.$get('https://api.radarrelay.com/v2/tokens')
+    return { tokens }
+  },
   name: 'Sell',
   components: {},
   data: function() {
@@ -44,7 +52,8 @@ export default {
         { text: 'REQ', value: 2 }
       ],
       select: 0,
-      offerAmount: 5
+      offerAmount: 0,
+      price: 0
     }
   },
   methods: {

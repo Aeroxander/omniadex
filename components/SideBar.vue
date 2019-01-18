@@ -1,8 +1,9 @@
 <template>
-  <div id="sidebar">
-    <vs-sidebar
+  <div class="parentx-static">
+    <vs-sidebar 
       :parent="$refs.parentSidebar"
       v-model="open"
+      static-position
       default-index="1"
       color="primary"
       class="sidebarx"
@@ -28,14 +29,27 @@
         icon="question_answer">Dashboard</vs-sidebar-item>
 
       <vs-sidebar-group 
-        :open="true"
+        :open="true" 
         title="Categories">
         <vs-sidebar-item 
-          index="2.1" 
+          index="2" 
           icon="store">NFT's</vs-sidebar-item>
-        <vs-sidebar-item 
-          index="2.2" 
-          icon="nature_people">EC-20's</vs-sidebar-item>
+        <vs-sidebar-group title="EC-20">
+          <vs-sidebar-group title="ETH">
+            <vs-sidebar-item
+              v-for="pair in pairs.filter(pair => pair.id.includes('WETH'))"
+              :key="pair.score"
+              :index="'2.'+pair.index"
+            >{{ pair.displayName }}</vs-sidebar-item>
+          </vs-sidebar-group>
+          <vs-sidebar-group title="DAI">
+            <vs-sidebar-item
+              v-for="pair in pairs.filter(pair => pair.id.includes('DAI'))"
+              :key="pair.score"
+              :index="'2.'+pair.index"
+            >{{ pair.displayName }}</vs-sidebar-item>
+          </vs-sidebar-group>
+        </vs-sidebar-group>
         <vs-sidebar-item 
           index="2.3" 
           icon="style">Misc</vs-sidebar-item>
@@ -71,6 +85,11 @@
 
 <script>
 export default {
+  asyncData({ $axios }) {
+    return $axios.$get('https://api.radarrelay.com/v2/markets').then(res => {
+      return { pairs: res }
+    })
+  },
   name: 'SideBar',
   props: {
     open: {

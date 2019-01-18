@@ -1,16 +1,9 @@
 <template>
   <div id="app">
     <div>
-      <SideBar :open="active"/>
       <vs-navbar 
         v-model="activeItem" 
         class="nabarx">
-        <vs-button 
-          color="dark" 
-          type="line" 
-          icon="menu" 
-          @click="active = !active">Categories</vs-button>
-
         <vs-navbar-title>
           <img
             src="https://cdn.discordapp.com/attachments/529971696380149770/530530296446189578/Screen_Shot_2019-01-03_at_23.37.36.png"
@@ -51,8 +44,7 @@ export default {
     SideBar
   },
   data: () => ({
-    activeItem: 0,
-    active: false
+    activeItem: 0
   })
 }
 </script>
