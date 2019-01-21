@@ -15,7 +15,10 @@
   "dependencies": {
     "0x.js": "^3.0.2",
     "@0x/connect": "^3.0.13",
+    "@chenfengyuan/vue-countdown": "^1.1.0",
+    "@nuxtjs/axios": "^5.3.6",
     "cross-env": "^5.2.0",
+    "cryptocurrency-icons": "^0.10.0",
     "material-icons": "^0.3.0",
     "nuxt": "^2.0.0",
     "vuesax": "^3.8.0"

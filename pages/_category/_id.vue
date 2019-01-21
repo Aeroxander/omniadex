@@ -1,15 +1,6 @@
 <template>
   <section class="container">
     <div class="offer">
-      <vs-breadcrumb align="left">
-        <li>
-          <router-link to="/marketplace">Marketplace</router-link>
-          <span class="vs-breadcrum--separator">/</span>
-        </li>
-        <li 
-          aria-current="page" 
-          class="active">Offer</li>
-      </vs-breadcrumb>
       <vs-row 
         vs-align="center" 
         vs-type="flex" 
@@ -26,10 +17,10 @@
         >
           <vs-card>
             <div slot="header">
-              <h3>Microsoft Office License</h3>
+              <h3>{{ token.name }}</h3>
             </div>
             <div slot="media">
-              <img src="https://0x.org/images/token_icons/ZRX.png">
+              <img :src="'https://0xproject.com/images/token_icons/' + token.symbol + '.png'">
             </div>
             <div>
               <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span>
@@ -61,7 +52,7 @@
           vs-w="4"
           vs-offset="1"
         >
-          <vs-divider color="primary">{{ params.id }}</vs-divider>
+          <vs-divider color="primary">{{ params }}</vs-divider>
           <vs-alert
             title="Software License"
             active="true"
@@ -76,19 +67,35 @@
               title="Lifetime" 
               subtitle="This NFT has a lifetime of 30 days"/>
             <vs-list-item 
-              :subtitle="params.id" 
+              :subtitle="order.signedOrder.makerAddress" 
               title="Owner ID"/>
-            <vs-list-item 
-              title="Duration" 
-              subtitle>
+            <vs-list-item title="Duration">
               <vs-chip>
                 <vs-avatar
                   text-color="success"
                   badge="1"
                   badge-color="rgb(140, 23, 164)"
                   icon="access_time"
-                />Ends in: 1d
+                />
+                <countdown :time="order.signedOrder.expirationTimeSeconds">
+                  <template
+                    slot-scope="props"
+                  >Ends in：{{ props.hours }} hours, {{ props.minutes }} minutes, {{ props.seconds }} seconds.</template>
+                </countdown>
               </vs-chip>
+            </vs-list-item>
+            <vs-list-header title="Bids"/>
+            <vs-list-item
+              v-for="bid in openBids"
+              :key="bid"
+              :title="bid.price"
+              :subtitle="'Bid on ' + bid.time"
+            >
+              <vs-chip 
+                closable
+                color="#24c1a0" 
+                close-icon="close" 
+                @click="remove(bid)">{{ bid.bidder }}</vs-chip>
             </vs-list-item>
           </vs-list>
           <vs-divider color="primary"/>
@@ -113,7 +120,7 @@
               min="0"/>
             <vs-button 
               type="filled" 
-              @click="openLoading">Bid for Ξ {{ offerAmount }}</vs-button>
+              @click="offerBid(offerAmount)">Bid for Ξ {{ offerAmount }}</vs-button>
           </span>
           <!--
           <li>
@@ -156,15 +163,16 @@ import {
   signatureUtils,
   SignerType
 } from '0x.js'
+import Vue from 'vue'
+import VueCountdown from '@chenfengyuan/vue-countdown'
+Vue.component(VueCountdown.name, VueCountdown)
 
 export default {
   /*
-  validate({ params }) {
-    return order.orderHash === params.id
-  },
-  */
+
   asyncData({ params, $axios }) {
     return $axios
+    do the awiat stuff here
       .$get('https://api.radarrelay.com/v2/markets/zrx-weth/book')
       .then(res => {
         return {
@@ -174,16 +182,44 @@ export default {
         }
       })
   },
+  */
+  async asyncData({ $axios, params }) {
+    const orders = await $axios.$get(
+      'https://api.radarrelay.com/v2/markets/' + params.category + '/book'
+    )
+    const tokens = await $axios.$get('https://api.radarrelay.com/v2/tokens')
+    var order =
+      orders.bids[orders.bids.findIndex(bid => bid.orderHash == params.id)]
+    const token =
+      tokens[tokens.findIndex(token => token.address == order.baseTokenAddress)]
+    console.log(typeof order.signedOrder.expirationTimeSeconds)
+    console.log(typeof order.signedOrder.expirationTimeSeconds)
+    console.log(order.signedOrder.expirationTimeSeconds)
+    return {
+      order: order,
+      params: params.id,
+      token: token
+    }
+  },
+  async validate({ $axios, params }) {
+    console.log(params)
+    const orders = await $axios.$get(
+      'https://api.radarrelay.com/v2/markets/' + params.category + '/book'
+    )
+    const order =
+      orders.bids[orders.bids.findIndex(bid => bid.orderHash == params.id)]
+    return order
+  },
   name: 'Offer',
-  components: {},
   data: function() {
     return {
       iteration: {},
       recurring: false,
       period: ['Daily', 'Weekly', 'Monthly'],
-      offerAmount: order.price,
+      offerAmount: 0,
       activePrompt: false,
-      bid: 'false'
+      bid: 'false',
+      openBids: []
     }
   },
   methods: {
@@ -192,6 +228,39 @@ export default {
       setTimeout(() => {
         this.$vs.loading.close()
       }, 2000)
+    },
+    offerBid(offerAmount) {
+      /*this.openBids += {
+        id: 1,
+        bidder: 'YOU!!!',
+        amount: offerAmount,
+        time: Date.now()
+      }*/
+      var now = new Date().toLocaleString()
+      if (this.openBids.findIndex(openBid => openBid == 'youraddress') === -1) {
+        this.openBids.splice(
+          this.openBids.findIndex(openBid => openBid == 'youraddress'),
+          1,
+          {
+            bidder: 'youraddress',
+            price: offerAmount,
+            time: now
+          }
+        )
+        this.openBids.filter(openBid => openBid.bidder == 'youraddress')
+      } else {
+        this.openBids.push({
+          bidder: 'youraddress',
+          price: offerAmount,
+          time: now
+        })
+      }
+    },
+    remove(bid) {
+      this.openBids.splice(
+        this.openBids.findIndex(openBid => openBid == bid),
+        1
+      )
     }
   }
 }

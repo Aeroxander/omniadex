@@ -6,7 +6,7 @@
         class="nabarx">
         <vs-navbar-title>
           <img
-            src="https://cdn.discordapp.com/attachments/529971696380149770/530530296446189578/Screen_Shot_2019-01-03_at_23.37.36.png"
+            src="~assets/OmniaDex.png"
             alt="Brand logo"
             height="50px"
           >

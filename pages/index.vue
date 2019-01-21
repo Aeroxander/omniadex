@@ -93,67 +93,7 @@
         <vs-tabs vs-position="left">
           <vs-tab
             v-for="pair in pairs.filter(pair => !pair.id.includes('DAI'))"
-            :key="pair.score"
-            :vs-label="pair.displayName"
-            @click="getOrders(pair.id)"
-          >
-            <vs-row 
-              vs-align="center" 
-              vs-type="flex" 
-              vs-justify="space-around" 
-              vs-w="12">
-              <vs-col
-                v-for="order in orders.bids"
-                :key="order.price"
-                type="flex"
-                vs-justify="center"
-                vs-align="center"
-                vs-lg="2.7"
-                vs-sm="8"
-                vs-xs="12"
-                vs-w="2.5"
-              >
-                <vs-card
-                  actionable
-                  class="cardx"
-                >
-                  <div slot="header">
-                    <h3>{{ order.type }}</h3>
-                  </div>
-                  <div slot="media">
-                    <img :src="'https://0xproject.com/images/token_icons/' + pair.id.split('-')[0] + '.png'">
-                  </div>
-                  <div>
-                    <span class="text-font"> {{ pair.name }} </span>
-                  </div>
-                  <vs-button 
-                    color="#0066CC"
-                    type="line"
-                    disabled>Ξ {{ order.price }}</vs-button>
-                  <div slot="footer">
-                    <vs-row vs-justify="flex-end">
-                      <vs-button
-                        color="success"
-                        type="gradient"
-                        icon="details"
-                        @click="$router.push('/offers/' + order.orderHash)"
-                      >Buy</vs-button>
-                    </vs-row>
-                  </div>
-                </vs-card>
-              </vs-col>
-            </vs-row>
-          </vs-tab>
-        </vs-tabs>
-      </vs-tab>
-      <vs-tab 
-        vs-label="DAI" 
-        vs-icon="account_balance" 
-        @click="colorx = '#FFA500'">
-        <vs-tabs vs-position="left">
-          <vs-tab
-            v-for="pair in pairs.filter(pair => pair.id.includes('DAI'))"
-            :key="pair.score"
+            :key="pair"
             :vs-label="pair.displayName"
             @click="getOrders(pair.id)"
           >
@@ -188,14 +128,76 @@
                   </div>
                   <vs-button 
                     color="primary" 
-                    type="line" >Ξ {{ order.price }}</vs-button>
+                    type="line"
+                    @click="$router.push(pair.id + '/' + order.orderHash)">
+                    Ξ {{ order.price }}</vs-button>
                   <div slot="footer">
                     <vs-row vs-justify="flex-end">
                       <vs-button
                         color="success"
                         type="gradient"
                         icon="details"
-                        @click="$router.push('/offers/' + order.orderHash)"
+                        @click="$router.push(pair.id + '/' + order.orderHash)"
+                      >
+                        Buy</vs-button>
+                    </vs-row>
+                  </div>
+                </vs-card>
+              </vs-col>
+            </vs-row>
+          </vs-tab>
+        </vs-tabs>
+      </vs-tab>
+      <vs-tab 
+        vs-label="DAI" 
+        vs-icon="account_balance" 
+        @click="colorx = '#FFA500'">
+        <vs-tabs vs-position="left">
+          <vs-tab
+            v-for="pair in pairs.filter(pair => pair.id.includes('DAI'))"
+            :key="pair"
+            :vs-label="pair.displayName"
+            @click="getOrders(pair.id)"
+          >
+            <vs-row 
+              vs-align="center" 
+              vs-type="flex" 
+              vs-justify="space-around" 
+              vs-w="12">
+              <vs-col
+                v-for="order in orders.bids"
+                :key="order.price"
+                type="flex"
+                vs-justify="center"
+                vs-align="center"
+                vs-lg="2.7"
+                vs-sm="8"
+                vs-xs="12"
+                vs-w="2.5"
+              >
+                <vs-card
+                  actionable
+                  class="cardx"
+                >
+                  <div slot="header">
+                    <h3>{{ order.type }}</h3>
+                  </div>
+                  <div>
+                    <span class="text-font"> {{ pair.name }} </span>
+                  </div>
+                  <vs-button 
+                    color="primary" 
+                    type="line"
+                    @click="$router.push(pair.id + '/' + order.orderHash)">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTMiIGhlaWdodD0iMTMiIHZpZXdCb3g9IjAgMCAxMyAxMyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0wLjMwODA3MyA0Ljc2NjFMNC43NjYwNyAwLjMwODA5NkM0Ljg2MzU5IDAuMjEwNDMzIDQuOTc5NDIgMC4xMzI5MzEgNS4xMDY5MSAwLjA4MDA2ODhDNS4yMzQ0IDAuMDI3MjA2MiA1LjM3MTA2IC05LjI5OTc2ZS0wNiA1LjUwOTA4IC05LjI5OTc2ZS0wNkM1LjY0NzA5IC05LjI5OTc2ZS0wNiA1Ljc4Mzc1IDAuMDI3MjA2MiA1LjkxMTI1IDAuMDgwMDY4OEM2LjAzODc0IDAuMTMyOTMxIDYuMTU0NTUgMC4yMTA0MzMgNi4yNTIwNyAwLjMwODA5NkwxMC43MTAxIDQuNzY2MUMxMC45MDcxIDQuOTYzMTkgMTEuMDE3NyA1LjIzMDQyIDExLjAxNzcgNS41MDkwOEMxMS4wMTc3IDUuNzg3NzQgMTAuOTA3MSA2LjA1NDk4IDEwLjcxMDEgNi4yNTIwN0w2LjI1MjA3IDEwLjcxMDFDNi4wNTQ5OSAxMC45MDcxIDUuNzg3NzQgMTEuMDE3OCA1LjUwOTA4IDExLjAxNzhDNS4yMzA0MiAxMS4wMTc4IDQuOTYzMTYgMTAuOTA3MSA0Ljc2NjA3IDEwLjcxMDFMMC4zMDgwNzMgNi4yNTIwN0MwLjIxMDQxMSA2LjE1NDU0IDAuMTMyOTMxIDYuMDM4NzQgMC4wODAwNjg4IDUuOTExMjVDMC4wMjcyMDYyIDUuNzgzNzUgLTEuNjcwMzZlLTA2IDUuNjQ3MSAtMS42NzAzNmUtMDYgNS41MDkwOEMtMS42NzAzNmUtMDYgNS4zNzEwNyAwLjAyNzIwNjIgNS4yMzQ0MiAwLjA4MDA2ODggNS4xMDY5MkMwLjEzMjkzMSA0Ljk3OTQzIDAuMjEwNDExIDQuODYzNjMgMC4zMDgwNzMgNC43NjYxWiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMSAxKSIgZmlsbD0iI0Y3NzI0OSIgc3Ryb2tlPSIjRjc3MjQ5IiBzdHJva2Utd2lkdGg9IjEuOCIvPgo8L3N2Zz4K">
+                    {{ order.price }}</vs-button>
+                  <div slot="footer">
+                    <vs-row vs-justify="flex-end">
+                      <vs-button
+                        color="success"
+                        type="gradient"
+                        icon="details"
+                        @click="$router.push(pair.id + '/' + order.orderHash)"
                       >Buy</vs-button>
                     </vs-row>
                   </div>
@@ -214,10 +216,11 @@ import TOKENS from '@/pages/tokens.js'
 
 export default {
   async asyncData({ $axios }) {
-    const bookRes = await $axios.$get(
-      'https://api.radarrelay.com/v2/markets/zrx-weth/book'
-    )
     const marketRes = await $axios.$get('https://api.radarrelay.com/v2/markets')
+    console.log(marketRes[1].id)
+    const bookRes = await $axios.$get(
+      'https://api.radarrelay.com/v2/markets/' + marketRes[1].id + '/book'
+    )
     return { orders: bookRes, pairs: marketRes }
   },
   name: 'Index',
