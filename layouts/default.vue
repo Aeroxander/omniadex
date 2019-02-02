@@ -5,21 +5,24 @@
         v-model="activeItem" 
         class="nabarx">
         <vs-navbar-title>
-          <img
-            src="~assets/OmniaDex.png"
-            alt="Brand logo"
-            height="50px"
-          >
+          <nuxt-link to="/">
+            <img
+              src="~assets/OmniaDex.png"
+              alt="Brand logo"
+              height="50px"
+              style="border-radius: 15px; margin-top: 4px;"
+            >
+          </nuxt-link>
         </vs-navbar-title>
 
         <vs-spacer/>
         <vs-navbar-item index="0">
-          <nuxt-link to="/sell">
+          <nuxt-link to="/setup">
             <vs-button
               color="#3dd495"
               gradient-color-secondary="rgb(130, 207, 23)"
               type="gradient"
-            >Sell Token</vs-button>
+            >Setup NFT Sale</vs-button>
           </nuxt-link>
         </vs-navbar-item>
         <vs-navbar-item index="1">

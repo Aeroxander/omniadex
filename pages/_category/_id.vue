@@ -52,17 +52,17 @@
           vs-w="4"
           vs-offset="1"
         >
-          <vs-divider color="primary">{{ params }}</vs-divider>
           <vs-alert
             title="Software License"
             active="true"
             color="dark"
           >Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</vs-alert>
-          <vs-list>
-            <vs-list-header title="Specifications"/>
+          <vs-list class="specs">
+            <vs-list-header
+              title="Specifications"/>
             <vs-list-item 
-              title="Token type" 
-              subtitle="This token is an NFT"/>
+              :subtitle="params" 
+              title="Token ID"/>
             <vs-list-item 
               title="Lifetime" 
               subtitle="This NFT has a lifetime of 30 days"/>
@@ -84,18 +84,28 @@
                 </countdown>
               </vs-chip>
             </vs-list-item>
-            <vs-list-header title="Bids"/>
+            <vs-list-header 
+              v-if="openBids.length !== 0" 
+              title="Bids"/>
             <vs-list-item
               v-for="bid in openBids"
-              :key="bid"
+              :key="bid.price"
               :title="bid.price"
               :subtitle="'Bid on ' + bid.time"
             >
               <vs-chip 
+                v-if="bid.bidder == 'youraddress'"
                 closable
                 color="#24c1a0" 
                 close-icon="close" 
                 @click="remove(bid)">{{ bid.bidder }}</vs-chip>
+              <vs-button 
+                v-else
+                type="filled" 
+                @click="acceptBid">
+                Accept bid
+                Ξ {{ order.price }}
+              </vs-button>
             </vs-list-item>
           </vs-list>
           <vs-divider color="primary"/>
@@ -277,5 +287,9 @@ p,
 .subTitle {
   text-shadow: 0 5px 10px rgba(0, 0, 0, 0.33);
   position: relative;
+}
+
+.specs {
+  text-align: initial;
 }
 </style>

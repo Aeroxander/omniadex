@@ -88,7 +88,7 @@
     <vs-tabs vs-alignment="center">
       <vs-tab 
         vs-label="WETH" 
-        vs-icon="pets" 
+        vs-icon="pets"
         @click="colorx = '#8B0000'">
         <vs-tabs vs-position="left">
           <vs-tab
@@ -100,7 +100,7 @@
             <vs-row 
               vs-align="center" 
               vs-type="flex" 
-              vs-justify="space-around" 
+              vs-justify="flex-start"
               vs-w="12">
               <vs-col
                 v-for="order in orders.bids"
@@ -108,8 +108,9 @@
                 type="flex"
                 vs-justify="center"
                 vs-align="center"
+                vs-offset="0.4"
                 vs-lg="2.7"
-                vs-sm="8"
+                vs-sm="5"
                 vs-xs="12"
                 vs-w="2.5"
               >
@@ -121,7 +122,9 @@
                     <h3>{{ order.type }}</h3>
                   </div>
                   <div slot="media">
-                    <img :src="'https://0xproject.com/images/token_icons/' + pair.id.split('-')[0] + '.png'">
+                    <img
+                      :src="'https://0xproject.com/images/token_icons/' + pair.id.split('-')[0] + '.png'"
+                      class="image-placeholder">
                   </div>
                   <div>
                     <span class="text-font"> {{ pair.name }} </span>
@@ -316,5 +319,14 @@ h3 {
   overflow: hidden;
   height: 500px;
   position: relative;
+}
+
+.image-placeholder {
+  min-width: 280px;
+  min-height: 200px;
+}
+
+.con-slot-tabs {
+  width: 100%;
 }
 </style>
