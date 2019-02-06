@@ -1,9 +1,9 @@
 <template>
   <section class="container">
     <div class="sell">
-      <vs-divider color="dark">
-        <h1>Sell NFT</h1>
-      </vs-divider>
+      <br>
+      <h1>Sell NFT</h1>
+      <br>
       <vs-row vs-justify="center">
         <vs-select
           v-model="select"
@@ -59,7 +59,6 @@
           @change="onChange"/>
       </vs-row>
       <br>
-      Price
       <vs-row vs-justify="center">
         <vs-input-number 
           v-model="price"
@@ -128,6 +127,7 @@ h1,
 p,
 .text-font {
   font-family: 'Nunito', Helvetica, sans-serif;
+  text-align: center;
 }
 
 .subTitle {
@@ -145,5 +145,6 @@ p,
   margin-top: 0;
   max-width: 800px;
   margin: 0 auto;
+  text-align: initial;
 }
 </style>

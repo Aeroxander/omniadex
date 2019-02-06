@@ -25,7 +25,7 @@
     "myetherwallet-blockies": "^0.1.1",
     "nuxt": "^2.0.0",
     "portis": "^1.3.4",
-    "vue-blockies": "git+https://github.com/eugenioclrc/vue-blockies.git",
+    "velocity-animate": "^1.5.2",
     "vue-picture-input": "^2.1.6",
     "vuesax": "^3.8.0"
   },

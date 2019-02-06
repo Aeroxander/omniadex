@@ -30,9 +30,11 @@
           </div>
           <div slot="footer">
             <vs-row vs-justify="flex-end">
-              <vs-button 
-                color="rgb(11, 189, 135)" 
-                type="filled">Setup Donation</vs-button>
+              <nuxt-link to="/fundraise">
+                <vs-button 
+                  color="rgb(11, 189, 135)" 
+                  type="filled">Setup Donation</vs-button>
+              </nuxt-link>
             </vs-row>
           </div>
         </vs-card>
