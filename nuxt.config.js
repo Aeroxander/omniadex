@@ -3,6 +3,10 @@ const pkg = require('./package')
 module.exports = {
   mode: 'universal',
 
+  router: {
+    base: '/omniadex/dist/'
+  },
+
   /*
   ** Headers of the page
   */
