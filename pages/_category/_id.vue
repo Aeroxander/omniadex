@@ -194,13 +194,14 @@ export default {
   },
   */
   async asyncData({ $axios, params }) {
+    /*
     const response = await httpClient.getOrdersAsync({ networkId: 42 })
     if (response.asks.total === 0) {
       throw new Error('No orders found on the SRA Endpoint')
     } else {
       console.log(response)
     }
-    /*
+    */
     const orders = await $axios.$get(
       'https://api.radarrelay.com/v2/markets/' + params.category + '/book'
     )
@@ -217,7 +218,6 @@ export default {
       params: params.id,
       token: token
     }
-    */
   },
   async validate({ $axios, params }) {
     console.log(params)

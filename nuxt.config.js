@@ -1,11 +1,18 @@
 const pkg = require('./package')
 
+const routerBase =
+  process.env.DEPLOY_ENV === 'GH_PAGES'
+    ? {
+        router: {
+          base: '/omniadex/dist/'
+        }
+      }
+    : {}
+
 module.exports = {
   mode: 'universal',
 
-  router: {
-    base: '/omniadex/dist/'
-  },
+  ...routerBase,
 
   /*
   ** Headers of the page
