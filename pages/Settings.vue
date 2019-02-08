@@ -108,7 +108,7 @@ export default {
           : new SignerSubprovider(injectedProviderIfExists)
       const provider = new Web3ProviderEngine()
       provider.addProvider(signerProvider)
-      provider.addProvider(new RPCSubprovider('https://mainnet.infura.io'))
+      provider.addProvider(new RPCSubprovider('https://rinkeby.infura.io'))
       provider.start()
       this.web3Wrapper = new Web3Wrapper(provider)
       this.contractWrappers = new ContractWrappers(provider, { networkId })
@@ -127,7 +127,7 @@ export default {
 
       this.blocky = toDataUrl(this.address)
       const web3 = new Web3(
-        new Web3.providers.HttpProvider('https://mainnet.infura.io')
+        new Web3.providers.HttpProvider('https://rinkeby.infura.io')
       )
       /* Portis is awesome for non-metamask users 
     if (typeof web3 !== 'undefined') {

@@ -119,7 +119,7 @@
             <br>
             <vs-button 
               type="filled" 
-              @click="openLoading">
+              @click="takerOrder">
               Buy now for
               Ξ {{ order.price }}
             </vs-button>
@@ -194,6 +194,13 @@ export default {
   },
   */
   async asyncData({ $axios, params }) {
+    const response = await httpClient.getOrdersAsync({ networkId: 42 })
+    if (response.asks.total === 0) {
+      throw new Error('No orders found on the SRA Endpoint')
+    } else {
+      console.log(response)
+    }
+    /*
     const orders = await $axios.$get(
       'https://api.radarrelay.com/v2/markets/' + params.category + '/book'
     )
@@ -210,6 +217,7 @@ export default {
       params: params.id,
       token: token
     }
+    */
   },
   async validate({ $axios, params }) {
     console.log(params)
@@ -233,11 +241,35 @@ export default {
     }
   },
   methods: {
-    openLoading() {
+    takerOrder() {
+      /*
+      // Allow the 0x ERC20 Proxy to move WETH on behalf of takerAccount
+      const takerWETHApprovalTxHash = await contractWrappers.erc20Token.setUnlimitedProxyAllowanceAsync(
+          etherTokenAddress,
+          taker,
+      );
+      await web3Wrapper.awaitTransactionSuccessAsync(takerWETHApprovalTxHash);
+
+      // Convert ETH into WETH for taker by depositing ETH into the WETH contract
+      const takerWETHDepositTxHash = await contractWrappers.etherToken.depositAsync(
+          etherTokenAddress,
+          takerAssetAmount,
+          taker,
+      );
+      await web3Wrapper.awaitTransactionSuccessAsync(takerWETHDepositTxHash);
+      
+      await contractWrappers.exchange.validateFillOrderThrowIfInvalidAsync(signedOrder, takerAssetAmount, taker);
+      txHash = await contractWrappers.exchange.fillOrderAsync(signedOrder, takerAssetAmount, taker, {
+        gasLimit: TX_DEFAULTS.gas,
+      });
+      await web3Wrapper.awaitTransactionSuccessAsync(txHash);
+      */
+      /*
       this.$vs.loading()
       setTimeout(() => {
         this.$vs.loading.close()
       }, 2000)
+      */
     },
     offerBid(offerAmount) {
       /*this.openBids += {
